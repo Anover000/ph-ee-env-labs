@@ -164,6 +164,10 @@ ph-ee-engine:
     resources:
       limits:
         memory: 758M
+    service:
+      type: NodePort
+      nodePort:
+        port: 30614
 
   ph_ee_connector_mojaloop:
     enabled: false
@@ -188,6 +192,10 @@ ph-ee-engine:
     deployment:
       annotations:
         deployTime: "{{ .Values.deployTime }}"
+    service:
+      type: NodePort
+      nodePort:
+        port: 30619
 
   mockpayment:
     enabled: true
@@ -249,6 +257,10 @@ ph-ee-engine:
         deployTime: "{{ .Values.deployTime }}"
     limits:
       memory: 768M
+    service:
+      type: NodePort
+      nodePort:
+        port: 30612
 
 
   operations_app:
@@ -283,9 +295,13 @@ ph-ee-engine:
     deployment:
       annotations:
         deployTime: "{{ .Values.deployTime }}"
+    service:
+      type: NodePort
+      nodePort:
+        port: 32306
 
   operations_web:
-    enabled: false
+    enabled: true
     image: docker.io/fynarfin/ph-ee-operations-web:latest
     hostname: "ops.sandbox.mifos.io"
     ingress:
@@ -293,7 +309,7 @@ ph-ee-engine:
       tls:
         - secretName: sandbox-secret
       hosts:
-        - host: ops.sandbox.mifos.io
+        - host: ops.sandbox.fynarfin.io
           paths:
             - path: "/"
               backend:
@@ -301,6 +317,17 @@ ph-ee-engine:
                   name: "ph-ee-operations-web"
                   port:
                     number: 4200
+    backend:
+      PH_OPS_BACKEND_SERVER_URL: https://ops-bk.sandbox.fynarfin.io/api/v1
+      PH_VOU_BACKEND_SERVER_URL: https://vouchers.sandbox.fynarfin.io
+      PH_ACT_BACKEND_SERVER_URL: https://identity-mapper.sandbox.fynarfin.io
+      PH_PLATFORM_TENANT_ID: gorilla
+      PH_PLATFORM_TENANT_IDS: gorilla
+      PH_REGISTERING_INSTITUTION_ID: 123
+    service:
+      type: NodePort
+      nodePort:
+        port: 30717
 
   identity:
     hostname: "ops-bk.sandbox.mifos.io"
@@ -375,6 +402,9 @@ ph-ee-engine:
     service:
       annotations:
         konghq.com/protocol: "https"
+      type: NodePort
+      nodePort:
+        port: 30710
     ingress:
       enabled: false
       annotations:
@@ -488,7 +518,7 @@ ph-ee-engine:
         hostname: admin-kong.sandbox.mifos.io
 
   vouchers:
-    enabled: false
+    enabled: true
     image: docker.io/fynarfin/ph-ee-vouchers:latest
     ingress:
       enabled: false
@@ -512,6 +542,11 @@ ph-ee-engine:
     deployment:
       annotations:
         deployTime: "{{ .Values.deployTime }}"
+    service:
+      type: NodePort
+      nodePort:
+        port: 30715
+
   integration_test:
     enabled: false
     gradle:
@@ -596,7 +631,7 @@ ph-ee-engine:
         deployTime: "{{ .Values.deployTime }}"
 
   post_installation_job:
-    enabled: true
+    enabled: false
   minio:
     enabled: true
 
